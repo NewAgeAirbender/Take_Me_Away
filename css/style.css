@@ -1,0 +1,15 @@
+body {
+    background: url("../images/messy_books.jpg");
+}
+
+.currentTrains, .addTrain {
+    background: whitesmoke;
+}
+
+th, label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+}
