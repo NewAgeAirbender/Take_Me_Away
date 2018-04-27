@@ -6,58 +6,66 @@ var config = {
     projectId: "first-61dd6",
     storageBucket: "first-61dd6.appspot.com",
     messagingSenderId: "807908245890"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
-  var database = firebase.database();
+var database = firebase.database();
 
-  //adds trains
-  $(".btn").on("click", function(event){
-      event.preventDefault();
-      
-      //grab input
-      var tName = $("#name").val().trim();
-      var tDestination = $("#destination").val().trim();
-      var trainOne = moment($("#firstTrain").val().trim(), "HH:mm").format("X");
-      var tRate = $("#rate").val().trim();
+//adds trains
+$(".btn").on("click", function (event) {
+    event.preventDefault();
 
-      //create object for data
-      var train = {
-          name: tName,
-          destination: tDestination,
-          start: trainOne,
-          rate: tRate
-      };
+    //grab input
+    var tName = $("#name").val().trim();
+    var tDestination = $("#destination").val().trim();
+    var trainOne = moment($("#firstTrain").val().trim(), "HH:mm").format("HH:mm");
+    var tRate = $("#rate").val().trim();
 
-      //push to database
-      database.ref().push(train);
+    //create object for data
+    var train = {
+        name: tName,
+        destination: tDestination,
+        start: trainOne,
+        rate: tRate
+    };
 
-      //clears input boxes
-      $("#name").val("");
-      $("#destination").val("");
-      $("#firstTrain").val("");
-      $("#rate").val("");
-  });
+    //push to database
+    database.ref().push(train);
 
-  //creates rows for each train
-  database.ref().on("child_added", function(childSnapshot, prevChildKey) {
+    //clears input boxes
+    $("#name").val("");
+    $("#destination").val("");
+    $("#firstTrain").val("");
+    $("#rate").val("");
+});
 
-    console.log(childSnapshot.val());
-  
+//creates rows for each train
+database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+
     // Store everything into a variable.
     var tName = childSnapshot.val().name;
     var tDestination = childSnapshot.val().destination;
     var tStart = childSnapshot.val().start;
     var tRate = childSnapshot.val().rate;
-  
-    //make sure it gets pulled
-    console.log(tName);
-    console.log(tDestination);
-    console.log(tStart);
-    console.log(tRate);
-  
+
+    //first time pushed back a year
+    var convertedFirstTime = moment(tStart, "HH:mm").subtract(1, "years");
+
+    //current time
+    var currentTime = moment();
+
+    //difference between the times
+    var diffTime = moment().diff(moment(convertedFirstTime), "minutes");
+
+    //remainder
+    var tRemainder = diffTime % tRate;
+
+    // Minute Until Train
+    var tMinutesTillTrain = tRate - tRemainder;
+
+    // Next Train
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+
     // Add each train's data into the table
-    //need next train
-    //need minutes away
-    $("#trains").append("<tr><td>" + tName + "</td><td>" + tDestination + "</td><td>" + tRate + "</td></tr>");
-  });
+    $("#trains").append("<tr><td>" + tName + "</td><td>" + tDestination + "</td><td>" + tRate + "</td><td>" +  moment(nextTrain).format("hh:mm a") + "</td><td>" + tMinutesTillTrain + "</td></tr>");
+});
