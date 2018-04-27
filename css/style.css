@@ -11,5 +11,15 @@ th, label {
 }
 
 input {
-    width: 100%;
+    width: 80%;
+}
+form, .currentTrains {
+    padding: 20px;
+    margin-bottom: 20px;
+    border: slategrey solid 1px;
+    border-radius: 5px;
+}
+
+.divLabel {
+    margin-bottom: 10px;
 }
