@@ -40,7 +40,7 @@ $(".btn").on("click", function (event) {
 });
 
 //creates rows for each train
-database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+database.ref().on("child_added", function (childSnapshot) {
 
     // Store everything into a variable.
     var tName = childSnapshot.val().name;
@@ -50,9 +50,6 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey) {
 
     //first time pushed back a year
     var convertedFirstTime = moment(tStart, "HH:mm").subtract(1, "years");
-
-    //current time
-    var currentTime = moment();
 
     //difference between the times
     var diffTime = moment().diff(moment(convertedFirstTime), "minutes");
